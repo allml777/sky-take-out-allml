@@ -9,4 +9,32 @@
                 #{id}
             </foreach>
     </select>
+    <select id="pageQuery" resultType="com.sky.entity.Setmeal">
+        select * from setmeal
+        <where>
+            <if test="name != null and name != ''">
+                and name like concat('%',#{name},'%')
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+    <insert id="saveDish">
+        insert into setmeal_dish (setmeal_id, dish_id, name, price, copies) values
+        <foreach collection="setmealDish" item="dish" separator=",">
+            (#{dish.setmealId},#{dish.dishId},#{dish.name},#{dish.price},#{dish.copies})
+        </foreach>
+    </insert>
+    <delete id="deleteBatch">
+        delete from setmeal where id in
+        <foreach collection="ids" separator="," item="id" open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <delete id="deleteDish">
+        delete from setmeal_dish where setmeal_id in
+        <foreach collection="ids" separator="," item="id" open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
 </mapper>

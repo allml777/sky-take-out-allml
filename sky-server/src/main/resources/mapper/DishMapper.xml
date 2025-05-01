@@ -43,5 +43,9 @@
         </set>
         where id = #{id}
     </update>
+    <select id="getByCategoryId" resultType="com.sky.vo.DishVO">
+        select d.*,c.name as categoryName from dish d left join category c on d.category_id = c.id
+        where d.category_id = #{categoryId}
+    </select>
 
 </mapper>

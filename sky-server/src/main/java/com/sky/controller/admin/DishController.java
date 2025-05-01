@@ -64,11 +64,20 @@ public class DishController {
      * @param id
      * @return
      */
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     @ApiOperation("根据id查询菜品")
     public Result<DishVO> getDishById(@PathVariable Long id){
         log.info("根据id查询菜品：{}",id);
-        return Result.success(dishService.getByIdWithFlavors(id));
+        DishVO byIdWithFlavors = dishService.getByIdWithFlavors(id);
+        return Result.success(byIdWithFlavors);
+    }
+
+    @GetMapping("/list")
+    @ApiOperation("根据分类id查询菜品")
+    public Result<List<DishVO>> list(Long categoryId){
+        log.info("根据分类id查询菜品：{}",categoryId);
+        List<DishVO> list = dishService.list(categoryId);
+        return Result.success(list);
     }
 
     /**
@@ -81,6 +90,20 @@ public class DishController {
     public Result update(@RequestBody DishDTO dishDTO){
         log.info("修改菜品：{}",dishDTO);
         dishService.updateWithFlavor(dishDTO);
+        return Result.success();
+    }
+
+    /**
+     * 起售、停售
+     * @param status
+     * @param id
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("起售、停售")
+    public Result startOrStop(@PathVariable Integer status, Long id){
+        log.info("起售、停售：{}",id);
+        dishService.startOrStop(status,id);
         return Result.success();
     }
 

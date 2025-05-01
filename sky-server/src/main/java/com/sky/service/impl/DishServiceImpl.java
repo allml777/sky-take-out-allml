@@ -9,6 +9,7 @@ import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
 import com.sky.entity.DishFlavor;
 import com.sky.exception.DeletionNotAllowedException;
+import com.sky.mapper.CategoryMapper;
 import com.sky.mapper.DishFlavorMapper;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealMapper;
@@ -140,5 +141,31 @@ public class DishServiceImpl implements DishService {
             flavors.forEach(dishFlavor -> dishFlavor.setDishId(dishDTO.getId()));
             dishFlavorMapper.insertBatch(flavors);
         }
+    }
+
+    /**
+     * 启售停售
+     * @param status
+     * @param id
+     */
+    // TODO 写完套餐管理再加
+    @Override
+    public void startOrStop(Integer status, Long id) {
+//        if (status == StatusConstant.DISABLE){
+//            dishMapper.startOrStop(status, id);
+//        }else {
+//            if (setmealMapper.)
+//        }
+    }
+
+    /**
+     * 根据分类id查询菜品
+     * @param categoryId
+     * @return
+     */
+    @Override
+    public List<DishVO> list(Long categoryId) {
+        List<DishVO> dish= dishMapper.getByCategoryId(categoryId);
+        return dish;
     }
 }
