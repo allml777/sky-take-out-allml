@@ -17,7 +17,6 @@ public interface SetmealMapper {
 
     /**
      * 根据分类id查询套餐的数量
-     *
      * @param id
      * @return
      */
@@ -42,15 +41,35 @@ public interface SetmealMapper {
     void saveSetmeal(Setmeal setmeal);
 
 
+    /**
+     * 保存套餐和菜品的关联关系
+     * @param setmealDish
+     */
     void saveDish(List<SetmealDish> setmealDish);
 
+    /**
+     * 根据id查询套餐
+     * @param id
+     * @return
+     */
     @Select("select * from setmeal where id = #{id}")
     Setmeal getByIdWithFlavors(Long id);
 
+    /**
+     * 根据套餐id查询套餐和菜品的关联关系
+     * @param id
+     * @return
+     */
     @Select("select * from setmeal_dish where setmeal_id = #{id}")
     List<SetmealDish> getDishFlavors(Long id);
 
     void deleteBatch(List<Long> ids);
 
     void deleteDish(List<Long> ids);
+
+    @Select("select count(id) from dish where id = #{dishId} and status = 0")
+    Integer countByDishId(Long dishId);
+
+    @Update("update setmeal set status = #{status} where id = #{setmealId}")
+    void startOrStop(Integer status, Long setmealId);
 }

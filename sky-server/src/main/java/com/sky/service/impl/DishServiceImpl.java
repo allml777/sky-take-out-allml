@@ -151,11 +151,10 @@ public class DishServiceImpl implements DishService {
     // TODO 写完套餐管理再加
     @Override
     public void startOrStop(Integer status, Long id) {
-//        if (status == StatusConstant.DISABLE){
-//            dishMapper.startOrStop(status, id);
-//        }else {
-//            if (setmealMapper.)
-//        }
+        // 如果有在售套餐，不能停售
+
+        // 起售/停售
+//        dishMapper.startOrStop(status, id);
     }
 
     /**

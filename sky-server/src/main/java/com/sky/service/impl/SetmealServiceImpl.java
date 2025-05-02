@@ -9,6 +9,7 @@ import com.sky.entity.SetmealDish;
 import com.sky.mapper.SetmealMapper;
 import com.sky.result.PageResult;
 import com.sky.service.SetmealService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class SetmealServiceImpl implements SetmealService {
     @Autowired
     private SetmealMapper setmealMapper;
@@ -72,15 +74,40 @@ public class SetmealServiceImpl implements SetmealService {
         return setmealDTO;
     }
 
+    @Transactional
     @Override
     public void updateWithDish(SetmealDTO setmealDTO) {
-        //
+        List<Long> setmealId = new ArrayList<>();
+        setmealId.add(setmealDTO.getId());
+        // 删除套餐
+        deleteBatch(setmealId);
+
+        // 添加套餐信息
+        saveWithDish(setmealDTO);
     }
 
+    /**
+     * 批量删除套餐
+     * @param ids
+     */
     @Transactional
     @Override
     public void deleteBatch(List<Long> ids) {
         setmealMapper.deleteBatch(ids);
         setmealMapper.deleteDish(ids);
+    }
+
+    @Override
+    public void startOrStop(Integer status, Long setmealId) {
+        // 判断套餐中的菜品有无停售
+        List<SetmealDish> dishFlavors = setmealMapper.getDishFlavors(setmealId);
+        for(SetmealDish setmealDish : dishFlavors){
+            Long dishId = setmealDish.getDishId();
+            if(setmealMapper.countByDishId(dishId) > 0){
+                throw new RuntimeException("套餐中包含停售菜品，无法起售");
+            }
+        }
+        // 停售套餐
+        setmealMapper.startOrStop(status, setmealId);
     }
 }
