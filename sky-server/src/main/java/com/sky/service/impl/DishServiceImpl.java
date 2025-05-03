@@ -66,6 +66,7 @@ public class DishServiceImpl implements DishService {
 
     /**
      * 分页查询菜品
+     *
      * @param dishPageQueryDTO
      * @return
      */
@@ -81,6 +82,7 @@ public class DishServiceImpl implements DishService {
 
     /**
      * 批量删除菜品
+     *
      * @param ids
      * @return
      */
@@ -90,13 +92,13 @@ public class DishServiceImpl implements DishService {
         // 判断当前菜品是否起售，起售就不能删除
         for (Long id : ids) {
             Dish dish = dishMapper.getById(id);
-            if(dish.getStatus() == StatusConstant.ENABLE){
+            if (dish.getStatus() == StatusConstant.ENABLE) {
                 throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);
             }
         }
         // 判断当前菜品有无套餐关联，有套餐关联就不能删除
         List<Long> setmealIds = setmealMapper.getSetmealByDishIds(ids);
-        if(setmealIds != null && setmealIds.size() > 0){
+        if (setmealIds != null && setmealIds.size() > 0) {
             throw new DeletionNotAllowedException(MessageConstant.DISH_BE_RELATED_BY_SETMEAL);
         }
         // 删除菜品表的数据
@@ -108,6 +110,7 @@ public class DishServiceImpl implements DishService {
 
     /**
      * 根据id查询菜品和对应的口味
+     *
      * @param id
      * @return
      */
@@ -123,6 +126,7 @@ public class DishServiceImpl implements DishService {
 
     /**
      * 修改菜品
+     *
      * @param dishDTO
      */
     @Transactional
@@ -145,6 +149,7 @@ public class DishServiceImpl implements DishService {
 
     /**
      * 启售停售
+     *
      * @param status
      * @param id
      */
@@ -152,19 +157,26 @@ public class DishServiceImpl implements DishService {
     @Override
     public void startOrStop(Integer status, Long id) {
         // 如果有在售套餐，不能停售
+        if (status == StatusConstant.DISABLE) {
+            if (setmealMapper.countSetmealByDishId(id) > 0){
+                throw new DeletionNotAllowedException(MessageConstant.SETMEAL_ON_SALE);
+            }
+        }
 
+        log.info("============停售菜品：{}", id);
         // 起售/停售
-//        dishMapper.startOrStop(status, id);
+        dishMapper.startOrStop(status, id);
     }
 
     /**
      * 根据分类id查询菜品
+     *
      * @param categoryId
      * @return
      */
     @Override
     public List<DishVO> list(Long categoryId) {
-        List<DishVO> dish= dishMapper.getByCategoryId(categoryId);
+        List<DishVO> dish = dishMapper.getByCategoryId(categoryId);
         return dish;
     }
 }

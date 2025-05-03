@@ -72,4 +72,8 @@ public interface SetmealMapper {
 
     @Update("update setmeal set status = #{status} where id = #{setmealId}")
     void startOrStop(Integer status, Long setmealId);
+
+    @Select("select count(*) from (\n" +
+            "select distinct s.* from setmeal s left join setmeal_dish sd on sd.setmeal_id = s.id where status = 1)a\n")
+    int countSetmealByDishId(Long id);
 }
