@@ -71,4 +71,12 @@ public interface DishMapper {
 
     @Update("update dish set status = (#{status}) where id = (#{setmealId})")
     void startOrStop(Integer status, Long setmealId);
+
+    /**
+     * 动态条件查询菜品
+     *
+     * @param dish
+     * @return
+     */
+    List<Dish> list(Dish dish);
 }
